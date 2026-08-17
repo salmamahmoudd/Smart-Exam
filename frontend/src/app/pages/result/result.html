@@ -1,0 +1,89 @@
+<div class="page-header">
+  <span class="page-label"> EXAMIFY </span>
+  <h2>My Results</h2>
+  <p>Review your previous exam results and performance.</p>
+</div>
+<div class="results-container">
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+  <section class="results-card" *ngIf="!loading && results.length > 0">
+    <div class="results-header">
+      <div>
+        <span class="section-label"> PERFORMANCE </span>
+        <h3>Exam History</h3>
+        <p>Review your previous exam results and performance.</p>
+      </div>
+      <div class="results-count">
+        {{ results.length }}
+        <span> Results </span>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Exam</th>
+            <th>Score</th>
+            <th>Correct</th>
+            <th>Wrong</th>
+            <th>Percentage</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let result of results">
+            <td>
+              <div class="exam-name">
+                <span class="exam-icon"> 📝 </span>
+                <span>
+                  {{ result.examId.title || 'Unknown Exam' }}
+                </span>
+              </div>
+            </td>
+            <td>
+              <strong class="score">
+                {{ result.score }}
+              </strong>
+              /
+              {{ result.totalQuestions }}
+            </td>
+            <td>
+              <span class="correct">
+                ✓
+                {{ result.correctAnswers }}
+              </span>
+            </td>
+            <td>
+              <span class="wrong">
+                ✕
+                {{ result.wrongAnswers }}
+              </span>
+            </td>
+            <td>
+              <strong class="percentage"> {{ result.percentage | number: '1.0-2' }}% </strong>
+            </td>
+            <td>
+              <span *ngIf="result.percentage >= 50" class="passed"> 🎉 Passed </span>
+              <span *ngIf="result.percentage < 50" class="failed"> ❌ Failed </span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button type="button" class="view-btn" (click)="viewResult(result._id)">
+                  View Result
+                  <span> → </span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="empty-state" *ngIf="!loading && results.length === 0">
+    <div class="empty-icon">📊</div>
+    <span class="empty-label"> RESULTS </span>
+    <h3>No Results Yet</h3>
+    <p>You haven't taken any exams yet.</p>
+    <a routerLink="/exams" class="start-btn"> Take an Exam → </a>
+  </section>
+</div>

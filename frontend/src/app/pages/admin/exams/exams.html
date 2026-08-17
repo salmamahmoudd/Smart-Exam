@@ -1,0 +1,155 @@
+<div class="admin-exams-page">
+  <header class="admin-header">
+    <div>
+      <h1>Manage Exams 📝</h1>
+      <p>Create, edit and manage all exams.</p>
+    </div>
+  </header>
+  <section class="exam-form-card">
+    <div class="form-header">
+      <div>
+        <span class="section-label">
+          {{ editingId ? 'EDIT EXAM' : 'NEW EXAM' }}
+        </span>
+        <h2>
+          {{ editingId ? 'Update Exam' : 'Create New Exam' }}
+        </h2>
+      </div>
+    </div>
+    <form class="exam-form" (ngSubmit)="saveExam()">
+      <div class="form-group">
+        <label> Exam Title </label>
+        <input
+          type="text"
+          name="title"
+          placeholder="Enter exam title"
+          [(ngModel)]="newExam.title"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label> Description </label>
+        <textarea
+          name="description"
+          rows="4"
+          placeholder="Enter exam description"
+          [(ngModel)]="newExam.description"
+          maxlength="500"
+        ></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label> Duration </label>
+          <div class="input-with-unit">
+            <input type="number" name="time" min="1" max="300" [(ngModel)]="newExam.time" />
+            <span> minutes </span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label> Status </label>
+          <select name="status" [(ngModel)]="newExam.status">
+            <option value="available">Available</option>
+            <option value="locked">Locked</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="save-btn" [disabled]="loading">
+          @if (!loading) {
+            <span>
+              {{ editingId ? '💾 Save Changes' : '➕ Create Exam' }}
+            </span>
+          } @else {
+            <span class="loading-content">
+              <span class="spinner"></span>
+              Saving...
+            </span>
+          }
+        </button>
+        @if (editingId) {
+          <button type="button" class="cancel-btn" (click)="resetForm()" [disabled]="loading">
+            Cancel
+          </button>
+        }
+      </div>
+    </form>
+  </section>
+  <section class="exams-section">
+    <div class="section-header">
+      <div>
+        <span class="section-label"> EXAMS </span>
+        <h2>All Exams</h2>
+        <p>Manage all exams available on the platform.</p>
+      </div>
+      <span class="exam-count">
+        {{ exams.length }}
+        <span> Exams </span>
+      </span>
+    </div>
+    <div class="loading-state" *ngIf="loading && exams.length === 0">
+      <span class="spinner"></span>
+      <p>Loading exams...</p>
+    </div>
+    <div class="exams-grid" *ngIf="!loading && exams.length > 0">
+      <article class="exam-card" *ngFor="let exam of exams; trackBy: trackById">
+        <div class="exam-card-top">
+          <div class="exam-icon">📝</div>
+          <span
+            class="status"
+            [class.available]="exam.status === 'available'"
+            [class.locked]="exam.status === 'locked'"
+          >
+            {{ exam.status }}
+          </span>
+        </div>
+        <div class="exam-content">
+          <h3>
+            {{ exam.title }}
+          </h3>
+          <p class="description">
+            {{ exam.description || 'No description available.' }}
+          </p>
+          <div class="exam-info">
+            <div>
+              <span class="info-icon"> ⏱️ </span>
+              <span> {{ exam.time }} min </span>
+            </div>
+            <div>
+              <span class="info-icon"> 📝 </span>
+              <span>
+                {{ exam.questionsCount || 0 }}
+                Questions
+              </span>
+            </div>
+          </div>
+          <div class="exam-actions">
+            <button
+              type="button"
+              class="questions-btn"
+              [routerLink]="['/admin/questions', exam._id]"
+            >
+              📝 Questions
+            </button>
+            <button type="button" class="edit-btn" (click)="editExam(exam)">✏️ Edit</button>
+            <button
+              type="button"
+              class="delete-btn"
+              (click)="deleteExam(exam._id)"
+              [disabled]="loading"
+            >
+              🗑️ Delete
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+    <div class="empty-state" *ngIf="!loading && exams.length === 0">
+      <div class="empty-icon">📝</div>
+      <h2>No Exams Found</h2>
+      <p>You haven't created any exams yet.</p>
+      <button type="button" class="add-exam-btn" (click)="resetForm()">
+        ➕ Create Your First Exam
+      </button>
+    </div>
+  </section>
+</div>

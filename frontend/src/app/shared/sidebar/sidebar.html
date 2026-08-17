@@ -1,0 +1,75 @@
+<aside class="sidebar" [class.open]="open">
+  <div class="sidebar-header">
+    <div class="brand">
+      <div class="brand-icon">📘</div>
+      <div>
+        <strong>Smart Exam</strong>
+        <span>Learning Platform</span>
+      </div>
+    </div>
+    <button class="sidebar-close" type="button" (click)="toggleMenu()" aria-label="Close menu">
+      ✕
+    </button>
+  </div>
+  <nav class="sidebar-nav">
+    <p class="nav-title">MAIN MENU</p>
+    @if (isAdmin()) {
+      <a
+        routerLink="/admin"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMobileMenu()"
+      >
+        <span class="nav-icon">⚡</span>
+        <span>Admin</span>
+      </a>
+      <a routerLink="/admin/exams" routerLinkActive="active" (click)="closeMobileMenu()">
+        <span class="nav-icon">▣</span>
+        <span>Exams</span>
+      </a>
+    } @else {
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMobileMenu()"
+      >
+        <span class="nav-icon">⌂</span>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/exams" routerLinkActive="active" (click)="closeMobileMenu()">
+        <span class="nav-icon">▣</span>
+        <span>Exams</span>
+      </a>
+      <a routerLink="/result" routerLinkActive="active" (click)="closeMobileMenu()">
+        <span class="nav-icon">◫</span>
+        <span>Results</span>
+      </a>
+    }
+    <a routerLink="/profile" routerLinkActive="active" (click)="closeMobileMenu()">
+      <span class="nav-icon">◯</span>
+      <span>Profile</span>
+    </a>
+    <a routerLink="/settings" routerLinkActive="active" (click)="closeMobileMenu()">
+      <span class="nav-icon">⚙</span>
+      <span>Settings</span>
+    </a>
+  </nav>
+  <div class="sidebar-bottom">
+    @if (isUser()) {
+      <div class="upgrade-card">
+        <div class="upgrade-icon">✦</div>
+        <strong> Keep Learning </strong>
+        <p>Take more exams and improve your score.</p>
+        <a routerLink="/exams" (click)="closeMobileMenu()">
+          <span>Explore Exams</span>
+          <span>→</span>
+        </a>
+      </div>
+    }
+    <button class="logout-btn" type="button" (click)="logout()">
+      <span>↪</span>
+      <span>Logout</span>
+    </button>
+  </div>
+</aside>

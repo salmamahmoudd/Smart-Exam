@@ -1,0 +1,15 @@
+<div class="unauthorized-page">
+  <div class="unauthorized-card">
+    <div class="error-icon">🚫</div>
+    <span class="error-label"> ACCESS DENIED </span>
+    <h1>Not Authorized</h1>
+    <p>
+      You don’t have permission to access this page. Please return to your dashboard and continue
+      learning.
+    </p>
+    <a [routerLink]="backRoute" class="back-btn">
+      <span>←</span>
+      <span>{{ backText }}</span>
+    </a>
+  </div>
+</div>

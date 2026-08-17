@@ -1,0 +1,84 @@
+<div class="page">
+  <div class="left-side">
+    <div class="overlay"></div>
+    <div class="left-content">
+      <h1>Welcome Back</h1>
+      <p>Login to continue your learning journey, access your exams, and track your progress 🚀</p>
+    </div>
+  </div>
+  <div class="right-side">
+    <div class="auth-card">
+      <h2>Welcome Back 👋</h2>
+      <p class="subtitle">Login to continue to your account</p>
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            id="email"
+            class="input"
+            type="email"
+            formControlName="email"
+            placeholder="Enter your email"
+            autocomplete="email"
+          />
+          @if (loginForm.get('email')?.touched && loginForm.get('email')?.errors) {
+            <div class="error-msg">
+              @if (loginForm.get('email')?.hasError('required')) {
+                <span>Email is required</span>
+              }
+              @if (loginForm.get('email')?.hasError('email')) {
+                <span>Enter a valid email address</span>
+              }
+            </div>
+          }
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-box">
+            <input
+              id="password"
+              class="input"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+            />
+            <button
+              type="button"
+              class="eye"
+              (click)="togglePassword()"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            >
+              {{ showPassword ? '🙈' : '👁️' }}
+            </button>
+          </div>
+          @if (loginForm.get('password')?.touched && loginForm.get('password')?.errors) {
+            <div class="error-msg">
+              @if (loginForm.get('password')?.hasError('required')) {
+                <span>Password is required</span>
+              }
+
+              @if (loginForm.get('password')?.hasError('pattern')) {
+                <span>Password must be 6-20 characters with letters and numbers</span>
+              }
+            </div>
+          }
+        </div>
+        <button class="btn-primary" type="submit" [disabled]="loginForm.invalid || isLoading">
+          @if (!isLoading) {
+            <span>Login 🚀</span>
+          } @else {
+            <span class="loading-content">
+              <span class="spinner"></span>
+              Logging in...
+            </span>
+          }
+        </button>
+      </form>
+      <div class="switch-auth">
+        Don't have an account?
+        <a routerLink="/auth/register"> Create one </a>
+      </div>
+    </div>
+  </div>
+</div>

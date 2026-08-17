@@ -1,0 +1,246 @@
+<div class="dashboard-layout">
+  <main class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="page-title">
+          <span>OVERVIEW</span>
+          <h2>Dashboard</h2>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <span>⌕</span>
+          <input
+            type="text"
+            placeholder="Search exams..."
+            [(ngModel)]="searchText"
+            (input)="onSearch()"
+          />
+          <kbd>Ctrl K</kbd>
+        </div>
+        <div class="search-results" *ngIf="searchText.trim()">
+          <div *ngFor="let exam of filteredExams">
+            {{ exam.title }}
+          </div>
+          <div *ngIf="filteredExams.length === 0">No exams found</div>
+        </div>
+        <button class="notification-btn" type="button" title="Notifications">
+          ♧
+          <span></span>
+        </button>
+        <a routerLink="/profile" class="top-profile">
+          <div class="avatar">
+            <img
+              *ngIf="profileImage"
+              [src]="profileImage"
+              [alt]="user?.name || 'User'"
+              (error)="onImageError($event)"
+            />
+            <span *ngIf="!profileImage">
+              {{ user?.name?.charAt(0)?.toUpperCase() || 'U' }}
+            </span>
+          </div>
+          <div class="profile-text">
+            <strong>
+              {{ user?.name || 'Student' }}
+            </strong>
+            <span> Student </span>
+          </div>
+          <span class="profile-arrow"> ⌄ </span>
+        </a>
+      </div>
+    </header>
+    <div class="dashboard-content">
+      <section class="welcome-card">
+        <div class="welcome-content">
+          <div class="welcome-badge">
+            <span class="pulse"></span>
+            Your learning journey continues
+          </div>
+          <h1>
+            Welcome back,
+            <span>
+              {{ user?.name || 'Student' }}
+            </span>
+            👋
+          </h1>
+          <p>
+            Ready to challenge yourself? Explore your exams, track your progress, and keep improving
+            your skills.
+          </p>
+          <div class="welcome-actions">
+            <a routerLink="/exams" class="primary-btn">
+              <span>Explore Exams</span>
+              <b>→</b>
+            </a>
+            <a routerLink="/result" class="secondary-btn"> View Results </a>
+          </div>
+        </div>
+        <div class="welcome-visual">
+          <div class="visual-glow"></div>
+          <div class="floating floating-one">
+            <span>✓</span>
+            <small>Great job!</small>
+          </div>
+          <div class="floating floating-two">
+            <span> {{ progress }}% </span>
+            <small>Progress</small>
+          </div>
+          <div class="book-visual">📚</div>
+          <div class="visual-circle circle-one"></div>
+          <div class="visual-circle circle-two"></div>
+        </div>
+      </section>
+      <section class="stats-grid">
+        <article class="stat-card">
+          <div class="stat-top">
+            <div class="stat-icon purple">▣</div>
+            <span class="stat-trend"> Available </span>
+          </div>
+          <div class="stat-body">
+            <span> Available Exams </span>
+            <strong>
+              {{ availableExamsCount }}
+            </strong>
+            <small> Ready to take now </small>
+          </div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top">
+            <div class="stat-icon cyan">↗</div>
+            <span class="stat-trend positive"> Progress </span>
+          </div>
+          <div class="stat-body">
+            <span> Average Score </span>
+            <strong> {{ progress }}% </strong>
+            <div class="mini-progress">
+              <span [style.width.%]="progress"></span>
+            </div>
+          </div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top">
+            <div class="stat-icon green">✓</div>
+            <span class="stat-trend positive"> Active </span>
+          </div>
+          <div class="stat-body">
+            <span> Completed Exams </span>
+            <strong>
+              {{ completedExams }}
+            </strong>
+            <small> Keep going! </small>
+          </div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top">
+            <div class="stat-icon orange">★</div>
+            <span class="stat-trend"> Best </span>
+          </div>
+          <div class="stat-body">
+            <span> Highest Score </span>
+            <strong> {{ highestScore }}% </strong>
+            <small> Your best performance </small>
+          </div>
+        </article>
+      </section>
+      <section class="main-grid">
+        <div class="dashboard-panel exams-panel">
+          <div class="panel-header">
+            <div>
+              <span class="panel-label"> PERFORMANCE </span>
+              <h2>Recent Exams</h2>
+              <p>Your latest exam activity</p>
+            </div>
+            <a routerLink="/result">
+              View all
+              <span>→</span>
+            </a>
+          </div>
+          <app-loading-spinner *ngIf="resultsLoading"></app-loading-spinner>
+          <div class="exam-list" *ngIf="!resultsLoading && results.length > 0">
+            <div class="exam-row" *ngFor="let result of results">
+              <div class="exam-info">
+                <div class="exam-icon">▣</div>
+                <div>
+                  <h3>
+                    {{ result.examId.title || 'Unknown Exam' }}
+                  </h3>
+                  <span>
+                    {{ result.score }}
+                    /
+                    {{ result.totalQuestions }}
+                    questions
+                  </span>
+                </div>
+              </div>
+              <div class="exam-score">
+            <strong> {{ result.percentage | number:'1.0-2' }}% </strong>
+                <div class="score-line">
+                  <span [style.width.%]="result.percentage"></span>
+                </div>
+              </div>
+              <span class="status-badge passed" *ngIf="result.percentage >= 50"> ✓ Passed </span>
+              <span class="status-badge failed" *ngIf="result.percentage < 50"> × Failed </span>
+            </div>
+          </div>
+          <div class="empty-state" *ngIf="!resultsLoading && results.length === 0">
+            <div class="empty-icon">◫</div>
+            <h3>No exams yet</h3>
+            <p>Start your first exam and your results will appear here.</p>
+            <a routerLink="/exams"> Browse Exams → </a>
+          </div>
+        </div>
+        <div class="dashboard-panel actions-panel">
+          <div class="panel-header">
+            <div>
+              <span class="panel-label"> SHORTCUTS </span>
+              <h2>Quick Actions</h2>
+              <p>Everything you need</p>
+            </div>
+          </div>
+          <div class="actions-list">
+            <a routerLink="/exams" class="action-card">
+              <div class="action-icon purple">▣</div>
+              <div>
+                <strong> Take an Exam </strong>
+                <span> Test your knowledge </span>
+              </div>
+              <b> → </b>
+            </a>
+            <a routerLink="/result" class="action-card">
+              <div class="action-icon cyan">↗</div>
+              <div>
+                <strong> View Results </strong>
+                <span> Track your performance </span>
+              </div>
+              <b> → </b>
+            </a>
+            <a routerLink="/profile" class="action-card">
+              <div class="action-icon green">◯</div>
+              <div>
+                <strong> My Profile </strong>
+                <span> Manage your account </span>
+              </div>
+              <b> → </b>
+            </a>
+            <a routerLink="/settings" class="action-card">
+              <div class="action-icon orange">⚙</div>
+              <div>
+                <strong> Settings </strong>
+                <span> Manage your account </span>
+              </div>
+              <b> → </b>
+            </a>
+          </div>
+          <div class="motivation-card">
+            <div class="motivation-icon">✦</div>
+            <div>
+              <strong> Keep it up! </strong>
+              <p>You're making great progress.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>

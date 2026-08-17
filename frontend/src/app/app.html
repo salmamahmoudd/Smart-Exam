@@ -1,0 +1,22 @@
+<header class="app-topbar">
+  <button class="menu-btn" type="button" *ngIf="showSidebar" (click)="toggleMenu()">☰</button>
+
+  <button class="theme-btn" type="button" (click)="toggleTheme()">
+    {{ isDark ? '🌙' : '☀️' }}
+  </button>
+</header>
+
+<app-sidebar *ngIf="showSidebar" [open]="menuOpen" (closeMenu)="menuOpen = false"> </app-sidebar>
+
+<div
+  *ngIf="toast$ | async as toast"
+  class="toast"
+  [class.success]="toast.type === 'success'"
+  [class.error]="toast.type === 'error'"
+  [class.warning]="toast.type === 'warning'"
+  [class.info]="toast.type === 'info'"
+>
+  {{ toast.message }}
+</div>
+
+<router-outlet></router-outlet>

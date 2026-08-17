@@ -1,0 +1,90 @@
+<div class="result-page">
+  <div class="page-header">
+    <span class="page-label">EXAMIFY</span>
+    <h2>Result Details</h2>
+    <p>Review your exam performance and see your final score.</p>
+  </div>
+  <section class="result-card" *ngIf="!loading && result">
+    <div class="result-header">
+      <div class="result-icon" [class.failed]="!passed">
+        {{ passed ? '🎉' : '😔' }}
+      </div>
+      <span class="result-label" [class.failed-label]="!passed">
+        {{ passed ? 'EXAM COMPLETED' : 'EXAM COMPLETED' }}
+      </span>
+      <h1>
+        {{ passed ? 'Congratulations!' : 'Better Luck Next Time' }}
+      </h1>
+      <p>
+        {{ result.examId.title || 'Exam Result' }}
+      </p>
+    </div>
+    <div class="score-section">
+      <div class="percentage-circle" [class.failed-circle]="!passed">
+        <div class="circle-inner">
+          <strong> {{ result.percentage | number: '1.0-2' }}% </strong>
+          <span> Final Score </span>
+        </div>
+      </div>
+      <h2 [class.success]="passed" [class.fail]="!passed">
+        {{ passed ? 'Passed' : 'Failed' }}
+      </h2>
+      <p class="score-message">
+        {{
+          passed
+            ? 'Excellent work! Keep up the great performance.'
+            : 'Keep practicing and try again. You can do better!'
+        }}
+      </p>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-icon purple">★</div>
+        <span class="label"> Score </span>
+        <strong>
+          {{ result.score }}
+          <small> / {{ result.totalQuestions }} </small>
+        </strong>
+      </div>
+      <div class="stat">
+        <div class="stat-icon green">✓</div>
+        <span class="label"> Correct Answers </span>
+        <strong class="success">
+          {{ result.correctAnswers }}
+        </strong>
+      </div>
+      <div class="stat">
+        <div class="stat-icon red">✕</div>
+        <span class="label"> Wrong Answers </span>
+        <strong class="fail">
+          {{ result.wrongAnswers }}
+        </strong>
+      </div>
+      <div class="stat">
+        <div class="stat-icon cyan">%</div>
+        <span class="label"> Percentage </span>
+        <strong> {{ result.percentage | number: '1.0-2' }}% </strong>
+      </div>
+    </div>
+    <div class="actions">
+      <a routerLink="/dashboard" class="btn primary">
+        <span>🏠</span>
+        Dashboard
+      </a>
+      <a routerLink="/exams" class="btn secondary">
+        <span>📝</span>
+        Take Another Exam
+      </a>
+    </div>
+  </section>
+  <div class="loading-state" *ngIf="loading">
+    <app-loading-spinner></app-loading-spinner>
+  </div>
+  <section class="empty-result" *ngIf="!loading && !result">
+    <div class="empty-icon">📊</div>
+    <span class="empty-label"> RESULT </span>
+    <h2>Result Not Found</h2>
+    <p>We couldn't find this exam result. It may have been deleted or is no longer available.</p>
+    <a routerLink="/result" class="btn primary"> ← Back to Results </a>
+  </section>
+</div>

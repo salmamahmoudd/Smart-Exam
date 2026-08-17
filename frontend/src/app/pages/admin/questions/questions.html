@@ -1,0 +1,81 @@
+<div class="questions-page">
+  <header class="questions-header">
+    <h1>Manage Questions 📝</h1>
+    <p>Add, edit and delete exam questions</p>
+  </header>
+  <section class="questions-form-card">
+    <h2>{{ editingId ? 'Update Question' : 'Add New Question' }}</h2>
+    <div class="question-form">
+      <input
+        class="question-input"
+        type="text"
+        name="question"
+        placeholder="Question"
+        [(ngModel)]="newQuestion.question"
+        required
+      />
+      <input
+        class="question-input"
+        *ngFor="let option of newQuestion.options; let i = index"
+        type="text"
+        [name]="'option-' + i"
+        placeholder="Option {{ i + 1 }}"
+        [(ngModel)]="newQuestion.options[i]"
+        required
+      />
+      <input
+        class="question-input correct-input"
+        type="text"
+        name="correctAnswer"
+        placeholder="Correct Answer"
+        [(ngModel)]="newQuestion.correctAnswer"
+        required
+      />
+      <div class="question-actions">
+        <button class="add-btn" type="button" [disabled]="loading" (click)="saveQuestion()">
+          @if (!loading) {
+            <span>{{ editingId ? '💾 Save Changes' : '➕ Add Question' }}</span>
+          } @else {
+            <span class="loading-content"><span class="spinner"></span>Saving...</span>
+          }
+        </button>
+        @if (editingId) {
+          <button class="cancel-btn" type="button" (click)="resetForm()">Cancel</button>
+        }
+      </div>
+    </div>
+  </section>
+  <section class="questions-section">
+    <div class="questions-section-header">
+      <h2>All Questions</h2>
+      <span class="questions-count">{{ questions.length }} Questions</span>
+    </div>
+    <div class="questions-list">
+      @for (q of questions; track q._id) {
+        <div class="question-card">
+          <h2>{{ q.question }}</h2>
+          <div class="options">
+            @for (option of q.options; track $index) {
+              <p>🔹 {{ option }}</p>
+            }
+          </div>
+          <p class="correct-answer">
+            ✅ Correct Answer:
+            <strong>{{ q.correctAnswer }}</strong>
+          </p>
+          <div class="actions">
+            <button class="edit-btn" type="button" (click)="editQuestion(q)">✏ Edit</button>
+            <button class="delete-btn" type="button" (click)="deleteQuestion(q._id)">
+              🗑 Delete
+            </button>
+          </div>
+        </div>
+      } @empty {
+        <div class="questions-empty">
+          <h2>No Questions Found</h2>
+          <p>Add questions for this exam.</p>
+        </div>
+      }
+    </div>
+  </section>
+</div>

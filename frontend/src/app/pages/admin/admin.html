@@ -1,0 +1,275 @@
+<div class="admin-page">
+  <header class="admin-header">
+    <div class="header-content">
+      <span class="header-label">ADMIN PANEL</span>
+      <h1>Admin Dashboard</h1>
+      <p>Manage users, exams, questions and results from one place.</p>
+    </div>
+    <div class="header-badge">
+      <span class="status-dot"></span>
+      System Online
+    </div>
+  </header>
+  <section class="admin-stats">
+    <article class="admin-stat-card users">
+      <div class="stat-icon">👥</div>
+      <div class="stat-info">
+        <span>Total Users</span>
+        <strong>{{ stats.totalUsers }}</strong>
+        <small>Registered students</small>
+      </div>
+    </article>
+    <article class="admin-stat-card exams">
+      <div class="stat-icon">📝</div>
+      <div class="stat-info">
+        <span>Total Exams</span>
+        <strong>{{ stats.totalExams }}</strong>
+        <small>All exams</small>
+      </div>
+    </article>
+    <article class="admin-stat-card questions">
+      <div class="stat-icon">❓</div>
+      <div class="stat-info">
+        <span>Total Questions</span>
+        <strong>{{ stats.totalQuestions }}</strong>
+        <small>Across all exams</small>
+      </div>
+    </article>
+    <article class="admin-stat-card available">
+      <div class="stat-icon">🟢</div>
+      <div class="stat-info">
+        <span>Available Exams</span>
+        <strong>{{ stats.availableExams }}</strong>
+        <small>Ready for students</small>
+      </div>
+    </article>
+    <article class="admin-stat-card results">
+      <div class="stat-icon">📊</div>
+      <div class="stat-info">
+        <span>Total Results</span>
+        <strong>{{ stats.totalResults }}</strong>
+        <small>Submitted exams</small>
+      </div>
+    </article>
+    <article class="admin-stat-card score">
+      <div class="stat-icon">⭐</div>
+      <div class="stat-info">
+        <span>Average Score</span>
+        <strong>{{ stats.averageScore }}%</strong>
+        <small>Overall performance</small>
+      </div>
+    </article>
+  </section>
+  <section class="dashboard-grid">
+    <div class="dashboard-card">
+      <div class="card-header">
+        <div>
+          <span class="card-label">USERS</span>
+          <h2>Recent Users</h2>
+        </div>
+        <div class="card-count">{{ stats.totalUsers }}</div>
+      </div>
+      <div class="user-list" *ngIf="recentUsers.length > 0">
+        <div class="user-row" *ngFor="let user of recentUsers">
+          <div class="user-avatar">
+            <img
+              *ngIf="user.profileImage"
+              [src]="getProfileImage(user.profileImage)"
+              [alt]="user.name"
+            />
+            <span *ngIf="!user.profileImage">{{ user.name.charAt(0).toUpperCase() }}</span>
+          </div>
+          <div class="user-info">
+            <strong>{{ user.name }}</strong>
+            <span>{{ user.email }}</span>
+          </div>
+          <div class="user-date">{{ user.createdAt | date: 'MMM d' }}</div>
+        </div>
+      </div>
+      <div class="mini-empty" *ngIf="recentUsers.length === 0">No users yet.</div>
+    </div>
+    <div class="dashboard-card">
+      <div class="card-header">
+        <div>
+          <span class="card-label">PERFORMANCE</span>
+          <h2>Recent Results</h2>
+        </div>
+      <div class="card-count">{{ recentResults.length }}</div>
+      </div>
+      <div class="result-list" *ngIf="recentResults.length > 0">
+        <div class="result-row" *ngFor="let result of recentResults">
+          <div class="result-icon">📊</div>
+          <div class="result-info">
+            <strong>{{ result.userId?.name || 'Unknown User' }}</strong>
+            <span>{{ result.examId?.title || 'Unknown Exam' }}</span>
+          </div>
+          <div
+            class="result-score"
+            [class.good]="result.percentage >= 70"
+            [class.average]="result.percentage >= 50 && result.percentage < 70"
+            [class.bad]="result.percentage < 50"
+          >
+        {{ result.percentage | number:'1.0-2' }}%
+          </div>
+        </div>
+      </div>
+      <div class="mini-empty" *ngIf="recentResults.length === 0">No results yet.</div>
+    </div>
+    <div class="dashboard-card popular-card">
+      <div class="card-header">
+        <div>
+          <span class="card-label">ANALYTICS</span>
+          <h2>Most Popular Exams</h2>
+        </div>
+      <span class="popular-label">
+        TOP {{ popularExams.length }}
+        </span>      
+      </div>
+      <div class="popular-list" *ngIf="popularExams.length > 0">
+        <div class="popular-row" *ngFor="let exam of popularExams; let i = index">
+          <div class="rank">{{ i + 1 }}</div>
+          <div class="popular-info">
+            <div class="popular-title">
+              <strong>{{ exam.title }}</strong>
+           <span>
+           {{ exam.attempts }} {{ exam.attempts === 1 ? 'attempt' : 'attempts' }}
+             </span>            
+            </div>
+            <div class="popular-progress">
+              <span
+                [style.width.%]="exam.averageScore"
+              ></span>
+            </div>
+          </div>
+          <div class="popular-score">
+            {{ exam.averageScore }}%
+            <small>avg.</small>
+          </div>
+        </div>
+      </div>
+      <div class="mini-empty" *ngIf="popularExams.length === 0">No exam attempts yet.</div>
+    </div>
+  </section>
+  <section class="exam-form-card">
+    <div class="form-header">
+      <div>
+        <span class="card-label">EXAM MANAGEMENT</span>
+        <h2>{{ editingId ? 'Edit Exam' : 'Create New Exam' }}</h2>
+      </div>
+      <div class="form-icon">📝</div>
+    </div>
+    <form [formGroup]="examForm" (ngSubmit)="createExam()">
+      <div class="form-group">
+        <label for="title">Exam Title</label>
+        <input id="title" type="text" formControlName="title" placeholder="Enter exam title" />
+        <div class="error" *ngIf="examForm.get('title')?.touched && examForm.get('title')?.invalid">
+          Exam title is required.
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          placeholder="Enter exam description"
+        ></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="time">Duration</label>
+          <input id="time" type="number" formControlName="time" placeholder="Minutes" />
+          <div class="error" *ngIf="examForm.get('time')?.touched && examForm.get('time')?.invalid">
+            Duration must be at least 1 minute.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select id="status" formControlName="status">
+            <option value="available">Available</option>
+            <option value="locked">Locked</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="submit-btn" [disabled]="examForm.invalid || loading">
+          <span *ngIf="!loading">{{ editingId ? 'Update Exam' : 'Create Exam' }}</span>
+          <span *ngIf="loading" class="loading-content"
+            ><span class="spinner"></span>Saving...</span
+          >
+        </button>
+        <button type="button" class="cancel-btn" *ngIf="editingId" (click)="resetForm()">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </section>
+  <section class="exams-section">
+    <div class="section-header">
+      <div>
+        <span class="card-label">EXAM MANAGEMENT</span>
+        <h2>All Exams</h2>
+      </div>
+      <strong>{{ exams.length }} Exams</strong>
+    </div>
+    <div class="exams-list" *ngIf="exams.length > 0">
+      <div class="exam-card" *ngFor="let exam of exams">
+        <div class="exam-top">
+          <div class="exam-title-wrap">
+            <div class="exam-symbol">📝</div>
+            <div>
+              <h3>{{ exam.title }}</h3>
+              <span class="exam-subtitle">Exam Assessment</span>
+            </div>
+          </div>
+          <span class="status" [ngClass]="exam.status">{{ exam.status }}</span>
+        </div>
+        <p class="description">{{ exam.description || 'No description available.' }}</p>
+        <div class="exam-meta">
+          <span>⏱️ {{ exam.time }} min</span>
+          <span *ngIf="exam.createdAt">📅 {{ exam.createdAt | date: 'mediumDate' }}</span>
+          <span *ngIf="exam.questionsCount !== undefined"
+            >❓ {{ exam.questionsCount }} Questions</span
+          >
+        </div>
+        <div class="actions">
+          <button type="button" class="add-btn" (click)="addQuestion(exam)">
+            <span>＋</span>Add Question
+          </button>
+          <button type="button" class="edit-btn" (click)="editExam(exam)">
+            <span>✎</span>Edit
+          </button>
+          <button type="button" class="delete-btn" (click)="confirmDelete(exam)">
+            <span>🗑</span>Delete
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="empty-state" *ngIf="exams.length === 0 && !loading">
+      <div class="empty-icon">📚</div>
+      <h3>No Exams Yet</h3>
+      <p>Create your first exam to get started.</p>
+    </div>
+    <div class="empty-state" *ngIf="loading && exams.length === 0">
+      <div class="empty-icon">⏳</div>
+      <h3>Loading Exams...</h3>
+      <p>Please wait while exams are being loaded.</p>
+    </div>
+  </section>
+  <div class="delete-overlay" *ngIf="showDeleteToast && examToDelete" (click)="cancelDelete()">
+    <div class="delete-confirm-card" (click)="$event.stopPropagation()">
+      <div class="delete-icon">🗑️</div>
+      <span class="delete-label">CONFIRM ACTION</span>
+      <h3>Delete Exam?</h3>
+      <p>
+        Are you sure you want to delete <strong>{{ examToDelete.title }}</strong
+        >? This action cannot be undone.
+      </p>
+      <div class="delete-confirm-actions">
+        <button type="button" class="cancel-delete" (click)="cancelDelete()">Cancel</button>
+        <button type="button" class="confirm-delete" (click)="deleteExam(examToDelete._id)">
+          Delete Exam
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,230 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <div>
+      <span class="settings-label">
+        {{ isAdmin ? 'ADMINISTRATION' : 'ACCOUNT' }}
+      </span>
+      <h1>⚙ {{ accountTitle }}</h1>
+      <p>
+        {{ accountDescription }}
+      </p>
+    </div>
+    <div class="settings-role-badge" [class.admin]="isAdmin">
+      <span>{{ isAdmin ? '🛡️' : '👤' }}</span>
+      {{ isAdmin ? 'Administrator' : 'Student' }}
+    </div>
+  </div>
+  <div class="profile-card">
+    <div class="profile-left">
+      <div class="profile-image-wrapper">
+        <img
+          [src]="profileImageUrl"
+          [alt]="user?.name || 'Profile'"
+          class="profile-image"
+          (load)="imageLoaded()"
+          (error)="imageError($event)"
+        />
+        <div class="image-overlay">
+          <span>📷</span>
+        </div>
+      </div>
+      <label class="change-photo">
+        <span>📷</span>
+        Change Photo
+        <input type="file" hidden accept="image/*" (change)="onFileSelected($event)" />
+      </label>
+      <small> JPG, PNG or WEBP · Max 5MB </small>
+    </div>
+    <div class="profile-right">
+      <span class="profile-label">
+        {{ isAdmin ? 'ADMINISTRATOR ACCOUNT' : 'STUDENT ACCOUNT' }}
+      </span>
+      <h2>
+        {{ user?.name || 'User' }}
+      </h2>
+      <p class="profile-email">
+        {{ user?.email || 'No email available' }}
+      </p>
+      <div class="profile-status">
+        <span class="status-dot"></span>
+        {{ isAdmin ? 'Active Administrator' : 'Active Student' }}
+      </div>
+    </div>
+  </div>
+  <div class="status-grid">
+    <div class="status-box">
+      <div class="icon">
+        {{ isAdmin ? '🛡️' : '✔' }}
+      </div>
+      <div>
+        <span> Account </span>
+        <h3>Active</h3>
+        <p>Account is currently active</p>
+      </div>
+    </div>
+    <div class="status-box">
+      <div class="icon">
+        {{ isAdmin ? '⚡' : '👤' }}
+      </div>
+      <div>
+        <span> Role </span>
+        <h3>
+          {{ user?.role | titlecase }}
+        </h3>
+        <p>
+          {{ isAdmin ? 'Full platform access' : 'Student access' }}
+        </p>
+      </div>
+    </div>
+    <div class="status-box">
+      <div class="icon">📅</div>
+      <div>
+        <span> Member Since </span>
+        <h3>
+          {{ user?.createdAt ? (user!.createdAt | date: 'MMM yyyy') : 'N/A' }}
+        </h3>
+        <p>Smart Exam member</p>
+      </div>
+    </div>
+  </div>
+  <div class="settings-grid">
+    <div class="settings-card">
+      <div class="card-heading">
+        <div class="heading-icon">👤</div>
+        <div>
+          <span> ACCOUNT </span>
+          <h2>Personal Information</h2>
+          <p>Your account details</p>
+        </div>
+      </div>
+      <div class="info-list">
+        <div class="info-item">
+          <div class="info-icon">👤</div>
+          <div>
+            <span> Full Name </span>
+            <strong>
+              {{ user?.name || 'Not available' }}
+            </strong>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">✉</div>
+          <div>
+            <span> Email Address </span>
+            <strong>
+              {{ user?.email || 'Not available' }}
+            </strong>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">🛡️</div>
+          <div>
+            <span> Account Role </span>
+            <strong>
+              {{ user?.role | titlecase }}
+            </strong>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">📅</div>
+          <div>
+            <span> Joined </span>
+            <strong>
+              {{ user?.createdAt ? (user!.createdAt | date: 'mediumDate') : 'Not available' }}
+            </strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="settings-card">
+      <div class="card-heading">
+        <div class="heading-icon">
+          {{ isAdmin ? '⚡' : '✨' }}
+        </div>
+        <div>
+          <span>
+            {{ isAdmin ? 'ADMINISTRATION' : 'PREFERENCES' }}
+          </span>
+          <h2>
+            {{ isAdmin ? 'Administrative Access' : 'Account Overview' }}
+          </h2>
+          <p>
+            {{ isAdmin ? 'Your permissions across Smart Exam' : 'Your current account status' }}
+          </p>
+        </div>
+      </div>
+      <div class="access-list">
+        <div class="access-item" *ngIf="isAdmin">
+          <span class="access-icon">👥</span>
+          <div>
+            <strong> Users </strong>
+            <small> Manage platform users </small>
+          </div>
+          <span class="access-status"> Full </span>
+        </div>
+        <div class="access-item" *ngIf="isAdmin">
+          <span class="access-icon">📝</span>
+          <div>
+            <strong> Exams </strong>
+            <small> Create and manage exams </small>
+          </div>
+          <span class="access-status"> Full </span>
+        </div>
+        <div class="access-item" *ngIf="isAdmin">
+          <span class="access-icon">❓</span>
+          <div>
+            <strong> Questions </strong>
+            <small> Manage exam questions </small>
+          </div>
+          <span class="access-status"> Full </span>
+        </div>
+        <div class="access-item" *ngIf="isAdmin">
+          <span class="access-icon">📊</span>
+          <div>
+            <strong> Results </strong>
+            <small> Review exam performance </small>
+          </div>
+          <span class="access-status"> Full </span>
+        </div>
+        <div class="access-item" *ngIf="isUser">
+          <span class="access-icon">📝</span>
+          <div>
+            <strong> Exams </strong>
+            <small> Take available exams </small>
+          </div>
+          <span class="access-status"> Available </span>
+        </div>
+        <div class="access-item" *ngIf="isUser">
+          <span class="access-icon">📊</span>
+          <div>
+            <strong> Results </strong>
+            <small> View your exam results </small>
+          </div>
+          <span class="access-status"> Available </span>
+        </div>
+      </div>
+      <button type="button" class="dashboard-btn" (click)="goToDashboard()">
+        {{ isAdmin ? 'Open Admin Dashboard' : 'Go to Dashboard' }}
+        <b>→</b>
+      </button>
+    </div>
+  </div>
+  <div class="logout-card">
+    <div class="logout-info">
+      <div class="logout-icon">↪</div>
+      <div>
+        <span> ACCOUNT </span>
+        <h2>Sign out</h2>
+        <p>
+          You can safely logout from your
+          {{ isAdmin ? 'administrator' : 'student' }}
+          account whenever you finish using Smart Exam.
+        </p>
+      </div>
+    </div>
+    <button type="button" class="logout-main" (click)="logout()">
+      Logout
+      <span>→</span>
+    </button>
+  </div>
+</div>

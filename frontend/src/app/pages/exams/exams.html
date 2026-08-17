@@ -1,0 +1,117 @@
+<div class="exams-layout">
+  <main class="exams-main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="page-title">
+          <span>LEARNING</span>
+          <h2>Exams</h2>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <span>⌕</span>
+          <input type="text" placeholder="Search exams..." />
+          <kbd>⌘ K</kbd>
+        </div>
+        <button class="notification-btn" type="button" title="Notifications">
+          ♧
+          <span></span>
+        </button>
+        <div class="top-profile">
+          <span class="profile-arrow">⌄</span>
+        </div>
+      </div>
+    </header>
+    <div class="exams-content">
+      <section class="exams-hero">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="pulse"></span>
+            Test your knowledge
+          </div>
+          <h1>
+            Choose Your
+            <span>Exam</span>
+            🚀
+          </h1>
+          <p>
+            Challenge yourself, test your knowledge, and improve your skills with our available
+            exams.
+          </p>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-glow"></div>
+          <div class="hero-icon">📝</div>
+          <div class="floating-card floating-one">
+            <strong>✓</strong>
+            <span>Ready!</span>
+          </div>
+          <div class="floating-card floating-two">
+            <strong>🚀</strong>
+            <span>Start</span>
+          </div>
+        </div>
+      </section>
+      <div class="section-header">
+        <div>
+          <span class="section-label"> AVAILABLE EXAMS </span>
+          <h2>Explore Exams</h2>
+          <p>Select an exam and start testing your knowledge.</p>
+        </div>
+        <div class="exam-count">
+          {{ exams.length }}
+          <span>Exams</span>
+        </div>
+      </div>
+      <section *ngIf="!loading && exams.length > 0" class="exams-grid">
+        <article class="exam-card" *ngFor="let exam of exams; trackBy: trackById">
+          <div class="exam-card-top">
+            <div class="exam-icon">📝</div>
+            <span
+              class="status"
+              [class.available]="exam.status === 'available'"
+              [class.locked]="exam.status === 'locked'"
+            >
+              {{ exam.status }}
+            </span>
+          </div>
+          <div class="exam-content">
+            <h2>
+              {{ exam.title }}
+            </h2>
+            <p class="description">
+              {{ exam.description }}
+            </p>
+            <div class="exam-info">
+              <div>
+                <span class="info-icon">⏱</span>
+                <span>{{ exam.time }} min</span>
+              </div>
+              <div>
+                <span class="info-icon">📝</span>
+                <span>Exam</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="start-btn"
+              (click)="startExam(exam._id)"
+              [disabled]="exam.status === 'locked'"
+            >
+              <span *ngIf="exam.status === 'available'">
+                Start Exam
+                <b>→</b>
+              </span>
+              <span *ngIf="exam.status === 'locked'"> 🔒 Locked </span>
+            </button>
+          </div>
+        </article>
+      </section>
+      <div *ngIf="!loading && exams.length === 0" class="empty-state">
+        <div class="empty-icon">📝</div>
+        <h2>No Exams Found</h2>
+        <p>There are no exams available right now. Please check again later.</p>
+      </div>
+    </div>
+  </main>
+</div>

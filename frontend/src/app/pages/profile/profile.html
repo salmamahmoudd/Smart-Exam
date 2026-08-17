@@ -1,0 +1,341 @@
+<div class="profile-page">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-title">
+        <span>
+          {{ isAdmin ? 'ADMIN ACCOUNT' : 'ACCOUNT' }}
+        </span>
+        <h2>
+          {{ isAdmin ? 'Administrator Profile' : 'My Profile' }}
+        </h2>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="profile-mini-text"></div>
+    </div>
+  </div>
+</div>
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
+<section class="profile-wrapper" *ngIf="isAdmin && !loading">
+  <div class="profile-card profile-hero admin-hero">
+    <div class="profile-header">
+      <div class="avatar">
+        <img *ngIf="profileImage" [src]="profileImage" [alt]="user?.name || 'Profile'" />
+        <span *ngIf="!profileImage">
+          {{ user?.name?.charAt(0)?.toUpperCase() || 'U' }}
+        </span>
+      </div>
+      <div class="profile-info">
+        <span class="profile-label"> ADMINISTRATOR ACCOUNT </span>
+        <h1>
+          {{ user?.name || 'Administrator' }}
+        </h1>
+        <p>
+          {{ user?.email || 'No email available' }}
+        </p>
+      </div>
+    </div>
+    <div class="profile-status">
+      <span class="status-dot"></span>
+      Active Administrator
+    </div>
+  </div>
+  <section class="stats-grid">
+    <article class="stat-card">
+      <div class="stat-icon purple">🛡️</div>
+      <div class="stat-body">
+        <span> Account Role </span>
+        <strong> Admin </strong>
+        <small> Full dashboard access </small>
+      </div>
+    </article>
+    <article class="stat-card">
+      <div class="stat-icon cyan">⚡</div>
+      <div class="stat-body">
+        <span> Access Level </span>
+        <strong> Full </strong>
+        <small> Administrative permissions </small>
+      </div>
+    </article>
+    <article class="stat-card">
+      <div class="stat-icon green">✓</div>
+      <div class="stat-body">
+        <span> Account Status </span>
+        <strong> Active </strong>
+        <small> Account is currently active </small>
+      </div>
+    </article>
+    <article class="stat-card">
+      <div class="stat-icon orange">★</div>
+      <div class="stat-body">
+        <span> Member Since </span>
+        <strong class="date-value">
+          {{ user?.createdAt | date: 'MMM yyyy' }}
+        </strong>
+        <small> Smart Exam administrator </small>
+      </div>
+    </article>
+  </section>
+  <section class="main-grid">
+    <div class="profile-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-label"> ACCOUNT </span>
+          <h2>Administrator Information</h2>
+          <p>Your administrative account details</p>
+        </div>
+      </div>
+      <div class="info-list">
+        <div class="info-row">
+          <div class="info-icon">👤</div>
+          <div class="info-content">
+            <span> Full Name </span>
+            <strong>
+              {{ user?.name || 'Not available' }}
+            </strong>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-icon">✉</div>
+          <div class="info-content">
+            <span> Email Address </span>
+            <strong>
+              {{ user?.email || 'Not available' }}
+            </strong>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-icon">🛡️</div>
+          <div class="info-content">
+            <span> Account Role </span>
+            <strong class="admin-role"> Administrator </strong>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-icon green-icon">✓</div>
+          <div class="info-content">
+            <span> Account Status </span>
+            <strong class="active-status"> Active </strong>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-icon">📅</div>
+          <div class="info-content">
+            <span> Joined </span>
+            <strong>
+              {{ user?.createdAt | date: 'mediumDate' }}
+            </strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="profile-panel performance-panel admin-access-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-label"> ADMINISTRATION </span>
+          <h2>Management Access</h2>
+          <p>Manage the Smart Exam platform</p>
+        </div>
+      </div>
+      <div class="admin-access-list">
+        <div class="admin-access-item">
+          <span> 👥 </span>
+          <div>
+            <strong> Users </strong>
+            <small> Manage platform users </small>
+          </div>
+        </div>
+        <div class="admin-access-item">
+          <span> 📝 </span>
+          <div>
+            <strong> Exams </strong>
+            <small> Create and manage exams </small>
+          </div>
+        </div>
+        <div class="admin-access-item">
+          <span> ❓ </span>
+          <div>
+            <strong> Questions </strong>
+            <small> Manage exam questions </small>
+          </div>
+        </div>
+        <div class="admin-access-item">
+          <span> 📊 </span>
+          <div>
+            <strong> Results </strong>
+            <small> Review exam performance </small>
+          </div>
+        </div>
+      </div>
+      <a routerLink="/admin" class="results-btn">
+        Open Admin Dashboard
+        <b>→</b>
+      </a>
+    </div>
+  </section>
+  <div class="profile-footer">
+    <div>
+      <strong> Welcome back, Administrator ⚡ </strong>
+      <span> Manage your platform and keep everything running smoothly. </span>
+    </div>
+    <a routerLink="/admin" class="primary-btn">
+      Go to Dashboard
+      <b>→</b>
+    </a>
+  </div>
+</section>
+<section class="profile-wrapper" *ngIf="isUser && !loading">
+  <div class="profile-card profile-hero">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <img *ngIf="profileImage" [src]="profileImage" [alt]="user?.name || 'Student'" />
+        <span *ngIf="!profileImage">
+          {{ user?.name?.charAt(0) || 'S' }}
+        </span>
+      </div>
+      <div class="profile-info">
+        <span class="profile-label"> STUDENT ACCOUNT </span>
+        <h1>
+          {{ user?.name || 'Student' }}
+        </h1>
+        <p>
+          {{ user?.email || 'No email available' }}
+        </p>
+      </div>
+    </div>
+    <div class="profile-status">
+      <span class="status-dot"></span>
+      Active
+    </div>
+  </div>
+  <section class="stats-grid">
+    <article class="stat-card">
+      <div class="stat-icon purple">📝</div>
+      <div class="stat-body">
+        <span> Exams Taken </span>
+        <strong>
+          {{ examsTaken }}
+        </strong>
+        <small> Total completed exams </small>
+      </div>
+    </article>
+    <article class="stat-card">
+      <div class="stat-icon cyan">↗</div>
+      <div class="stat-body">
+        <span> Average Score </span>
+        <strong> {{ averageScore }}% </strong>
+        <div class="mini-progress">
+          <span [style.width.%]="averageScore"></span>
+        </div>
+      </div>
+    </article>
+    <article class="stat-card">
+      <div class="stat-icon green">✓</div>
+      <div class="stat-body">
+        <span> Highest Score </span>
+        <strong> {{ highestScore }}% </strong>
+        <small> Your best performance </small>
+      </div>
+    </article>
+    <article class="stat-card">
+      <div class="stat-icon orange">★</div>
+      <div class="stat-body">
+        <span> Member Since </span>
+        <strong class="date-value">
+          {{ user?.createdAt | date: 'MMM yyyy' }}
+        </strong>
+        <small> Welcome to Smart Exam </small>
+      </div>
+    </article>
+  </section>
+  <section class="main-grid">
+    <div class="profile-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-label"> ACCOUNT </span>
+          <h2>Account Information</h2>
+          <p>Your personal account details</p>
+        </div>
+      </div>
+      <div class="info-list">
+        <div class="info-row">
+          <div class="info-icon">👤</div>
+          <div class="info-content">
+            <span> Full Name </span>
+            <strong>
+              {{ user?.name || 'Not available' }}
+            </strong>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-icon">✉</div>
+          <div class="info-content">
+            <span> Email Address </span>
+            <strong>
+              {{ user?.email || 'Not available' }}
+            </strong>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-icon green-icon">✓</div>
+          <div class="info-content">
+            <span> Account Status </span>
+            <strong class="active-status"> Active </strong>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-icon">📅</div>
+          <div class="info-content">
+            <span> Joined </span>
+            <strong>
+              {{ user?.createdAt | date: 'mediumDate' }}
+            </strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="profile-panel performance-panel">
+      <div class="panel-header">
+        <div>
+          <span class="panel-label"> PERFORMANCE </span>
+          <h2>Your Performance</h2>
+          <p>Keep improving your results</p>
+        </div>
+      </div>
+      <div class="performance-content">
+        <div class="score-circle percentage-circle">
+          <div>
+            <strong> {{ averageScore }}% </strong>
+            <span> Average </span>
+          </div>
+        </div>
+        <div class="performance-details">
+          <div>
+            <span> Exams Completed </span>
+            <strong>
+              {{ examsTaken }}
+            </strong>
+          </div>
+          <div>
+            <span> Best Score </span>
+            <strong> {{ highestScore }}% </strong>
+          </div>
+        </div>
+      </div>
+      <a routerLink="/result" class="results-btn">
+        View My Results
+        <b>→</b>
+      </a>
+    </div>
+  </section>
+  <div class="profile-footer">
+    <div>
+      <strong> Keep learning! 🚀 </strong>
+      <span> Take more exams and improve your score. </span>
+    </div>
+    <a routerLink="/exams" class="primary-btn">
+      Explore Exams
+      <b>→</b>
+    </a>
+  </div>
+</section>

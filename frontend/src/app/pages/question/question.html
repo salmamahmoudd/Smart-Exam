@@ -1,0 +1,133 @@
+<div class="question-page">
+  <header class="exam-topbar">
+    <div class="exam-brand">
+      <div class="brand-icon">📘</div>
+      <div>
+        <span>SMART EXAM</span>
+        <strong>{{ exam.title || 'Exam' }}</strong>
+      </div>
+    </div>
+    <div class="exam-timer" [class.warning]="timeLeft <= 60">
+      <span class="timer-icon">⏱</span>
+      <div class="timer-content">
+        <small>TIME LEFT</small>
+        <strong> {{ minutes | number: '2.0' }}:{{ seconds | number: '2.0' }} </strong>
+      </div>
+    </div>
+  </header>
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+  <main class="question-container" *ngIf="!loading && questions.length">
+    <section class="question-card">
+      <div class="question-topbar">
+        <div class="exam-title">
+          <span class="exam-label"> SMART EXAM • QUESTION </span>
+          <h1>Question {{ currentQuestionIndex + 1 }}</h1>
+        </div>
+        <div class="question-number">
+          {{ currentQuestionIndex + 1 }}
+          <span>/ {{ questions.length }}</span>
+        </div>
+      </div>
+      <div class="progress-info">
+        <span> Question {{ currentQuestionIndex + 1 }} of {{ questions.length }} </span>
+        <span>
+          {{ ((currentQuestionIndex + 1) / questions.length) * 100 | number: '1.0-0' }}%
+        </span>
+      </div>
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          [style.width.%]="((currentQuestionIndex + 1) / questions.length) * 100"
+        ></div>
+      </div>
+      <div class="question-content">
+        <span class="question-label"> QUESTION {{ currentQuestionIndex + 1 }} </span>
+        <h2>
+          {{ questions[currentQuestionIndex].question }}
+        </h2>
+      </div>
+      <div class="options">
+        <button
+          type="button"
+          class="option"
+          *ngFor="let option of questions[currentQuestionIndex].options; let i = index"
+          [class.active]="selectedAnswer === option"
+          (click)="selectAnswer(option)"
+        >
+          <span class="option-letter">
+            {{ ['A', 'B', 'C', 'D'][i] || i + 1 }}
+          </span>
+          <span class="option-text">
+            {{ option }}
+          </span>
+          <span class="radio">
+            <span *ngIf="selectedAnswer === option"></span>
+          </span>
+        </button>
+      </div>
+      <div class="question-actions">
+        <button
+          class="prev-btn"
+          type="button"
+          [disabled]="currentQuestionIndex === 0"
+          (click)="previousQuestion()"
+        >
+          <span>←</span>
+          Previous
+        </button>
+        <div class="action-info">
+          <span *ngIf="!selectedAnswer"> Select an answer to continue </span>
+          <span *ngIf="selectedAnswer"> Answer selected ✓ </span>
+        </div>
+        <button
+          class="next-btn"
+          type="button"
+          [disabled]="!selectedAnswer || submitting"
+          (click)="nextQuestion()"
+        >
+          <span *ngIf="currentQuestionIndex < questions.length - 1">
+            Next
+            <b>→</b>
+          </span>
+          <span *ngIf="currentQuestionIndex === questions.length - 1">
+            {{ submitting ? 'Submitting...' : 'Submit Exam' }}
+            <b *ngIf="!submitting">✓</b>
+          </span>
+        </button>
+      </div>
+    </section>
+    <aside class="exam-side-panel">
+      <div class="side-card">
+        <div class="side-icon">📝</div>
+        <h3>Exam Progress</h3>
+        <p>Keep going! You're doing great.</p>
+        <div class="side-progress">
+          <span [style.width.%]="((currentQuestionIndex + 1) / questions.length) * 100"></span>
+        </div>
+        <strong>
+          {{ currentQuestionIndex + 1 }}
+          / {{ questions.length }}
+        </strong>
+      </div>
+      <div class="side-card tips-card">
+        <div class="side-icon">💡</div>
+        <h3>Quick Tip</h3>
+        <p>Read each question carefully before choosing your answer.</p>
+      </div>
+      <div class="side-card exam-info-card">
+        <div class="info-row">
+          <span>Exam</span>
+          <strong>{{ exam.title }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Questions</span>
+          <strong>{{ questions.length }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Duration</span>
+          <strong>{{ exam.time }} min</strong>
+        </div>
+      </div>
+    </aside>
+  </main>
+</div>

@@ -1,0 +1,144 @@
+<div class="page">
+  <div class="left-side">
+    <div class="overlay"></div>
+    <div class="left-content">
+      <h1>Join Start Exam</h1>
+      <p>
+        Create your account and start testing your skills, improving your knowledge, and achieving
+        your goals 🚀
+      </p>
+    </div>
+  </div>
+  <div class="right-side">
+    <div class="auth-card">
+      <h2>Create Account 👤</h2>
+      <p class="subtitle">Start your learning journey with us</p>
+      <form [formGroup]="registerForm" (ngSubmit)="register()">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input
+            id="name"
+            class="input"
+            type="text"
+            formControlName="name"
+            placeholder="Enter your full name"
+            autocomplete="name"
+          />
+          @if (registerForm.get('name')?.touched && registerForm.get('name')?.errors) {
+            <div class="error-msg">
+              @if (registerForm.get('name')?.hasError('required')) {
+                <span>Name is required</span>
+              }
+              @if (registerForm.get('name')?.hasError('minlength')) {
+                <span>Name must be at least 3 characters</span>
+              }
+              @if (registerForm.get('name')?.hasError('maxlength')) {
+                <span>Name cannot exceed 50 characters</span>
+              }
+            </div>
+          }
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            id="email"
+            class="input"
+            type="email"
+            formControlName="email"
+            placeholder="Enter your email"
+            autocomplete="email"
+          />
+          @if (registerForm.get('email')?.touched && registerForm.get('email')?.errors) {
+            <div class="error-msg">
+              @if (registerForm.get('email')?.hasError('required')) {
+                <span>Email is required</span>
+              }
+              @if (registerForm.get('email')?.hasError('email')) {
+                <span>Enter a valid email address</span>
+              }
+            </div>
+          }
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-box">
+            <input
+              id="password"
+              class="input"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Enter your password"
+              autocomplete="new-password"
+            />
+            <button
+              type="button"
+              class="eye"
+              (click)="togglePassword()"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            >
+              {{ showPassword ? '🙈' : '👁️' }}
+            </button>
+          </div>
+          @if (registerForm.get('password')?.touched && registerForm.get('password')?.errors) {
+            <div class="error-msg">
+              @if (registerForm.get('password')?.hasError('required')) {
+                <span>Password is required</span>
+              }
+              @if (registerForm.get('password')?.hasError('pattern')) {
+                <span>Password must be 6-20 characters with letters and numbers</span>
+              }
+            </div>
+          }
+        </div>
+        <div class="form-group">
+          <label for="rePassword">Confirm Password</label>
+          <div class="password-box">
+            <input
+              id="rePassword"
+              class="input"
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              formControlName="rePassword"
+              placeholder="Confirm your password"
+              autocomplete="new-password"
+            />
+            <button
+              type="button"
+              class="eye"
+              (click)="toggleConfirmPassword()"
+              [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'"
+            >
+              {{ showConfirmPassword ? '🙈' : '👁️' }}
+            </button>
+          </div>
+          @if (
+            registerForm.get('rePassword')?.touched &&
+            (registerForm.get('rePassword')?.errors || registerForm.hasError('missMatch'))
+          ) {
+            <div class="error-msg">
+              @if (registerForm.get('rePassword')?.hasError('required')) {
+                <span>Confirm password is required</span>
+              }
+              @if (registerForm.hasError('missMatch')) {
+                <span>Passwords do not match</span>
+              }
+            </div>
+          }
+        </div>
+        <button class="btn-primary" type="submit" [disabled]="registerForm.invalid || isLoading">
+          @if (!isLoading) {
+            <span>Create Account 🚀</span>
+          } @else {
+            <span class="loading-content">
+              <span class="spinner"></span>
+              Creating account...
+            </span>
+          }
+        </button>
+      </form>
+      <div class="switch-auth">
+        Already have an account?
+        <a routerLink="/auth/login">Sign in</a>
+      </div>
+    </div>
+  </div>
+</div>

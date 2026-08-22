@@ -14,28 +14,9 @@ const resultRoutes = require('./routes/result.routes');
 const adminRoutes = require('./routes/admin.routes');
 const app = express();
 
-const allowedOrigins = [
-  'http://localhost:4200',
-  'https://smart-exam-eight.vercel.app'
-];
-
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      if (
-        allowedOrigins.includes(origin) ||
-        /^https:\/\/smart-exam-[a-z0-9]+-salmamahmoudds-projects\.vercel\.app$/.test(origin)
-      ) {
-        return callback(null, true);
-      }
-
-      console.log('Blocked CORS origin:', origin);
-      return callback(new Error('Not allowed by CORS'));
-    },
+    origin: true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']

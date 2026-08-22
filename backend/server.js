@@ -16,45 +16,35 @@ const adminRoutes = require('./routes/admin.routes');
 const app = express();
 
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests without Origin
-    if (!origin) {
-      return callback(null, true);
-    }
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
 
-    // Local Angular development
-    if (origin === 'http://localhost:4200') {
-      return callback(null, true);
-    }
+  const isAllowed =
+    !origin ||
+    origin === 'http://localhost:4200' ||
+    origin === 'https://smart-exam-eight.vercel.app' ||
+    /^https:\/\/smart-exam-[a-z0-9]+-salmamahmoudds-projects\.vercel\.app$/.test(origin);
 
-    // Main Vercel domain
-    if (origin === 'https://smart-exam-eight.vercel.app') {
-      return callback(null, true);
-    }
+  if (isAllowed && origin) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
 
-    // All Vercel deployment URLs for this project
-    if (
-      /^https:\/\/smart-exam-[a-z0-9]+-salmamahmoudds-projects\.vercel\.app$/.test(
-        origin
-      )
-    ) {
-      return callback(null, true);
-    }
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+  );
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
 
-    console.log('Blocked CORS origin:', origin);
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
 
-    return callback(new Error('Not allowed by CORS'));
-  },
-
-  credentials: true,
-
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
-
-app.use(cors(corsOptions));
+  next();
+});
 
 
 app.use(express.json());

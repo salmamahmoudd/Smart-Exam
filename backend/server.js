@@ -14,9 +14,15 @@ const resultRoutes = require('./routes/result.routes');
 const adminRoutes = require('./routes/admin.routes');
 const app = express();
 
+const allowedOrigins = [
+  'http://localhost:4200',
+  'https://smart-exam-eight.vercel.app',
+  'https://smart-exam-khwjjiiot-salmamahmoudds-projects.vercel.app'
+];
+
 app.use(
   cors({
-    origin: 'http://localhost:4200',
+    origin: allowedOrigins,
     credentials: true
   })
 );

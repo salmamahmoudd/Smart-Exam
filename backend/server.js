@@ -12,31 +12,66 @@ const examRoutes = require('./routes/exam.routes');
 const questionRoutes = require('./routes/question.routes');
 const resultRoutes = require('./routes/result.routes');
 const adminRoutes = require('./routes/admin.routes');
+
 const app = express();
 
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-  })
-);
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (origin === 'http://localhost:4200') {
+      return callback(null, true);
+    }
+
+    if (
+      /^https:\/\/smart-exam-[a-z0-9]+-salmamahmoudds-projects\.vercel\.app$/.test(
+        origin
+      )
+    ) {
+      return callback(null, true);
+    }
+
+    if (origin === 'https://smart-exam-eight.vercel.app') {
+      return callback(null, true);
+    }
+
+    return callback(new Error('Not allowed by CORS'));
+  },
+
+  credentials: true,
+
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.use(
+  '/uploads',
+  express.static(path.join(__dirname, 'uploads'))
+);
+
 
 connectDB();
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/exams', examRoutes);
 app.use('/api/questions', questionRoutes);
 app.use('/api/results', resultRoutes);
-app.use('/api/admin',adminRoutes);
+app.use('/api/admin', adminRoutes);
+
 
 app.get('/', (req, res) => {
-  res.send('API Running');
+  res.status(200).send('API Running');
 });
+
 
 app.use((req, res) => {
   res.status(404).json({
@@ -44,14 +79,21 @@ app.use((req, res) => {
   });
 });
 
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
+
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({
+      message: 'CORS Error'
+    });
+  }
+
   res.status(500).json({
-    message:
-      err.message ||
-      'Something went wrong'
+    message: err.message || 'Something went wrong'
   });
 });
+
 
 const PORT = process.env.PORT || 8000;
 

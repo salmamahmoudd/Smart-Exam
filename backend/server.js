@@ -16,13 +16,26 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:4200',
-  'https://smart-exam-eight.vercel.app',
-  'https://smart-exam-khwjjiiot-salmamahmoudds-projects.vercel.app'
+  'https://smart-exam-eight.vercel.app'
 ];
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      const isAllowed =
+        allowedOrigins.includes(origin) ||
+        /^https:\/\/smart-exam-[a-z0-9]+-salmamahmoudds-projects\.vercel\.app$/.test(origin);
+
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true
   })
 );

@@ -27,7 +27,7 @@ app.use(
       }
 
       if (
-        allowedOrigins.includes(origin) ||
+        origin === 'http://localhost:4200' ||
         origin.endsWith('.vercel.app')
       ) {
         return callback(null, true);
@@ -40,8 +40,6 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization']
   })
 );
-
-app.options('*', cors());
 
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

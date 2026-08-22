@@ -18,14 +18,22 @@ const app = express();
 
 const corsOptions = {
   origin: function (origin, callback) {
+    // Allow requests without Origin
     if (!origin) {
       return callback(null, true);
     }
 
+    // Local Angular development
     if (origin === 'http://localhost:4200') {
       return callback(null, true);
     }
 
+    // Main Vercel domain
+    if (origin === 'https://smart-exam-eight.vercel.app') {
+      return callback(null, true);
+    }
+
+    // All Vercel deployment URLs for this project
     if (
       /^https:\/\/smart-exam-[a-z0-9]+-salmamahmoudds-projects\.vercel\.app$/.test(
         origin
@@ -34,9 +42,7 @@ const corsOptions = {
       return callback(null, true);
     }
 
-    if (origin === 'https://smart-exam-eight.vercel.app') {
-      return callback(null, true);
-    }
+    console.log('Blocked CORS origin:', origin);
 
     return callback(new Error('Not allowed by CORS'));
   },
@@ -49,6 +55,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
 
 app.use(express.json());
 
